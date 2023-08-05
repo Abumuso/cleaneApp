@@ -1,6 +1,4 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
 import { CustomersModule } from './customers/customers.module';
 import { WorkersModule } from './workers/workers.module';
 import { AdminsModule } from './admins/admins.module';
@@ -12,10 +10,40 @@ import { ServiceTypesModule } from './service_types/service_types.module';
 import { PaymentTypesModule } from './payment_types/payment_types.module';
 import { RegionsModule } from './regions/regions.module';
 import { DistrictsModule } from './districts/districts.module';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { Module } from '@nestjs/common';
+import { MailModule } from './mail/mail.module';
+import { Customer } from './customers/models/customer.model';
+import { Region } from './regions/models/region.model';
 
 @Module({
-  imports: [CustomersModule, WorkersModule, AdminsModule, OrdersModule, WorkerServiceModule, PlasticCardsModule, WorkTimesModule, ServiceTypesModule, PaymentTypesModule, RegionsModule, DistrictsModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({ envFilePath: `.env`, isGlobal: true }),
+    SequelizeModule.forRoot({
+      dialect: 'postgres',
+      host: process.env.POSTGRES_HOST,
+      port: Number(process.env.POSTGRES_PORT),
+      username: process.env.POSTGRES_USER,
+      password: String(process.env.POSTGRES_PASSWORD),
+      database: process.env.POSTGRES_DB,
+      models: [Customer, Region],
+      autoLoadModels: true,
+      logging: false,
+    }),
+    CustomersModule,
+    WorkersModule,
+    AdminsModule,
+    OrdersModule,
+    WorkerServiceModule,
+    PlasticCardsModule,
+    WorkTimesModule,
+    ServiceTypesModule,
+    PaymentTypesModule,
+    RegionsModule,
+    DistrictsModule,
+    MailModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

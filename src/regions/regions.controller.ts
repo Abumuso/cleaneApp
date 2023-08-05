@@ -1,34 +1,53 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { RegionsService } from './regions.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateRegionDto } from './dto/create-region.dto';
+import { RegionService } from './regions.service';
+import { Region } from './models/region.model';
 import { UpdateRegionDto } from './dto/update-region.dto';
 
-@Controller('regions')
-export class RegionsController {
-  constructor(private readonly regionsService: RegionsService) {}
+@ApiTags('Regionlar')
+@Controller('region')
+export class RegionController {
+  constructor(private readonly regionService: RegionService) {}
 
-  @Post()
-  create(@Body() createRegionDto: CreateRegionDto) {
-    return this.regionsService.create(createRegionDto);
+  @ApiOperation({ summary: 'Region yaratish' })
+  @Post('create')
+  async createRegion(@Body() createRegionDto: CreateRegionDto) {
+    return this.regionService.createRegion(createRegionDto);
   }
 
-  @Get()
-  findAll() {
-    return this.regionsService.findAll();
+  @ApiOperation({ summary: "Regionlarni ko'rish" })
+  @Get('all')
+  async getAllRegion(): Promise<Region[]> {
+    return this.regionService.getAllRegion();
   }
 
+  @ApiOperation({ summary: "Regionni id bo'yicha ko'rish" })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.regionsService.findOne(+id);
+  async getRegionBYId(@Param('id') id: string): Promise<Region> {
+    return this.regionService.getRegionById(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRegionDto: UpdateRegionDto) {
-    return this.regionsService.update(+id, updateRegionDto);
+  @ApiOperation({ summary: "Regionni o'zgartirish" })
+  @Put(':id')
+  async updateRegion(
+    @Param('id') id: string,
+    @Body() updateRegionDto: UpdateRegionDto,
+  ): Promise<Region> {
+    return this.regionService.updateRegion(+id, updateRegionDto);
   }
 
+  @ApiOperation({ summary: "Regionni o'chirish" })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.regionsService.remove(+id);
+  async deleteRegionById(@Param('id') id: string): Promise<object> {
+    return this.regionService.deleteRegionById(+id);
   }
 }

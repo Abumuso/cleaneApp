@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
-import { RegionsService } from './regions.service';
-import { RegionsController } from './regions.controller';
+import { RegionService } from './regions.service';
+import { RegionController } from './regions.controller';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { Region } from './models/region.model';
 
 @Module({
-  controllers: [RegionsController],
-  providers: [RegionsService]
+  imports: [SequelizeModule.forFeature([Region])],
+  controllers: [RegionController],
+  providers: [RegionService],
 })
 export class RegionsModule {}
