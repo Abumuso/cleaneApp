@@ -9,13 +9,14 @@ import {
   Res,
 } from '@nestjs/common';
 import { CustomersService } from './customers.service';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Customer } from './models/customer.model';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { Response } from 'express';
 import { LoginCustomerDto } from './dto/login-customer.dto';
 import { CookieGetter } from '../decorators/cookieGetter.decorator';
 
+@ApiTags('Foydalanuvchilar')
 @Controller('customers')
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
@@ -30,7 +31,7 @@ export class CustomersController {
     return this.customersService.registration(createCustomerDto, res);
   }
 
-  @ApiOperation({ summary: 'login Customet' })
+  @ApiOperation({ summary: 'login Customer' })
   @ApiResponse({ status: 200, type: Customer })
   @HttpCode(HttpStatus.OK)
   @Post('signin')

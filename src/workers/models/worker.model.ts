@@ -1,21 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
-interface CustomerAttrs {
+interface WorkerAttrs {
   first_name: string;
   last_name: string;
+  passport_series: string;
   username: string;
   hashed_password: string;
   email: string;
   phone: string;
   photo: string;
+  birthday: Date;
+  region_id: number;
   address: string;
   is_active: boolean;
   hashed_refresh_token: string;
 }
 
-@Table({ tableName: 'customers' })
-export class Customer extends Model<Customer, CustomerAttrs> {
+@Table({ tableName: 'worker' })
+export class Worker extends Model<Worker, WorkerAttrs> {
   @ApiProperty({ example: 1, description: 'Unique ID' })
   @Column({
     type: DataType.INTEGER,
@@ -24,7 +27,7 @@ export class Customer extends Model<Customer, CustomerAttrs> {
   })
   id: number;
 
-  @ApiProperty({ example: 'Shoilhom', description: 'Foydalanuvchi ismi' })
+  @ApiProperty({ example: 'Shoilhom', description: 'Ishhci ismi' })
   @Column({
     type: DataType.STRING,
   })
@@ -32,7 +35,7 @@ export class Customer extends Model<Customer, CustomerAttrs> {
 
   @ApiProperty({
     example: 'Sharahmetov',
-    description: 'Foydalanuvchi Familiyasi',
+    description: 'Ishhci Familiyasi',
   })
   @Column({
     type: DataType.STRING,
@@ -40,8 +43,17 @@ export class Customer extends Model<Customer, CustomerAttrs> {
   last_name: string;
 
   @ApiProperty({
+    example: 'AB8445459',
+    description: 'Ishhci pasport seriyasi',
+  })
+  @Column({
+    type: DataType.STRING,
+  })
+  passport_series: string;
+
+  @ApiProperty({
     example: 'user1',
-    description: 'Foydalanuvchi nomi',
+    description: 'Ishhci nomi',
   })
   @Column({
     type: DataType.STRING,
@@ -51,7 +63,7 @@ export class Customer extends Model<Customer, CustomerAttrs> {
 
   @ApiProperty({
     example: 'password',
-    description: 'Foydalanuvchi paroli',
+    description: 'Ishhci paroli',
   })
   @Column({
     type: DataType.STRING,
@@ -60,7 +72,7 @@ export class Customer extends Model<Customer, CustomerAttrs> {
 
   @ApiProperty({
     example: 'email1@mail.uz',
-    description: 'Foydalanuvchi elektron pochtasi',
+    description: 'Ishhci elektron pochtasi',
   })
   @Column({
     type: DataType.STRING,
@@ -70,7 +82,7 @@ export class Customer extends Model<Customer, CustomerAttrs> {
 
   @ApiProperty({
     example: '+998901234567',
-    description: 'Foydalanuvchi telefon raqami',
+    description: 'Ishhci telefon raqami',
   })
   @Column({
     type: DataType.STRING,
@@ -78,17 +90,35 @@ export class Customer extends Model<Customer, CustomerAttrs> {
   phone: string;
 
   @ApiProperty({
-    example: 'customer photo link',
-    description: 'Foydalanuvchi rasmi',
+    example: 'worker photo link',
+    description: 'Ishhci rasmi',
   })
   @Column({
     type: DataType.STRING,
   })
-  customer_photo: string;
+  photo: string;
+
+  @ApiProperty({
+    example: '01.01.2000',
+    description: 'Ishchi tugilgan sanasi',
+  })
+  @Column({
+    type: DataType.DATE,
+  })
+  birthday: Date;
+
+  @ApiProperty({
+    example: 1,
+    description: 'Ishchi IDsi',
+  })
+  @Column({
+    type: DataType.INTEGER,
+  })
+  region_id: number;
 
   @ApiProperty({
     example: 'yunusobod 7',
-    description: 'Foydalanuvchi adresi',
+    description: 'Ishhci adresi',
   })
   @Column({
     type: DataType.STRING,
@@ -98,7 +128,7 @@ export class Customer extends Model<Customer, CustomerAttrs> {
 
   @ApiProperty({
     example: 'false',
-    description: 'Foydalanuvchi tasdiqlangan holati',
+    description: 'Ishhci tasdiqlangan holati',
   })
   @Column({
     type: DataType.BOOLEAN,
@@ -108,7 +138,7 @@ export class Customer extends Model<Customer, CustomerAttrs> {
 
   @ApiProperty({
     example: 'token',
-    description: 'Foydalanuvchi tokeni',
+    description: 'Ishhci tokeni',
   })
   @Column({
     type: DataType.STRING,

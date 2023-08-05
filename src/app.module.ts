@@ -15,6 +15,7 @@ import { Module } from '@nestjs/common';
 import { MailModule } from './mail/mail.module';
 import { Customer } from './customers/models/customer.model';
 import { Region } from './regions/models/region.model';
+import { Worker } from './workers/models/worker.model';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { Region } from './regions/models/region.model';
       username: process.env.POSTGRES_USER,
       password: String(process.env.POSTGRES_PASSWORD),
       database: process.env.POSTGRES_DB,
-      models: [Customer, Region],
+      models: [Customer, Region, Worker],
       autoLoadModels: true,
       logging: false,
     }),
