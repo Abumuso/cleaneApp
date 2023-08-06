@@ -9,13 +9,13 @@ import { WorkTimesModule } from './work_times/work_times.module';
 import { ServiceTypesModule } from './service_types/service_types.module';
 import { PaymentTypesModule } from './payment_types/payment_types.module';
 import { RegionsModule } from './regions/regions.module';
-import { DistrictsModule } from './districts/districts.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Module } from '@nestjs/common';
 import { MailModule } from './mail/mail.module';
 import { Customer } from './customers/models/customer.model';
 import { Region } from './regions/models/region.model';
 import { Worker } from './workers/models/worker.model';
+import { PaymentType } from './payment_types/models/payment_type.model';
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { Worker } from './workers/models/worker.model';
       username: process.env.POSTGRES_USER,
       password: String(process.env.POSTGRES_PASSWORD),
       database: process.env.POSTGRES_DB,
-      models: [Customer, Region, Worker],
+      models: [Customer, Region, Worker, PaymentType],
       autoLoadModels: true,
       logging: false,
     }),
@@ -41,7 +41,6 @@ import { Worker } from './workers/models/worker.model';
     ServiceTypesModule,
     PaymentTypesModule,
     RegionsModule,
-    DistrictsModule,
     MailModule,
   ],
   controllers: [],
