@@ -1,34 +1,54 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { ServiceTypesService } from './service_types.service';
 import { CreateServiceTypeDto } from './dto/create-service_type.dto';
 import { UpdateServiceTypeDto } from './dto/update-service_type.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ServiceType } from './models/service_type.model';
 
+@ApiTags('Servis nomlari')
 @Controller('service-types')
 export class ServiceTypesController {
-  constructor(private readonly serviceTypesService: ServiceTypesService) {}
+  constructor(private readonly serviceTypeService: ServiceTypesService) {}
 
-  @Post()
-  create(@Body() createServiceTypeDto: CreateServiceTypeDto) {
-    return this.serviceTypesService.create(createServiceTypeDto);
+  @ApiOperation({ summary: 'Servisni yaratish' })
+  @Post('create')
+  async createServiceType(@Body() createServiceTypeDto: CreateServiceTypeDto) {
+    return this.serviceTypeService.createServiceType(createServiceTypeDto);
   }
 
-  @Get()
-  findAll() {
-    return this.serviceTypesService.findAll();
+  @ApiOperation({ summary: "Servisni ko'rish" })
+  @Get('all')
+  async getAllServiceTypes(): Promise<ServiceType[]> {
+    return this.serviceTypeService.getAllServiceTypes();
   }
 
+  @ApiOperation({ summary: "Servisni id bo'yicha ko'rish" })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.serviceTypesService.findOne(+id);
+  async getServiceTypeBYId(@Param('id') id: string): Promise<ServiceType> {
+    return this.serviceTypeService.getServiceTypeById(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateServiceTypeDto: UpdateServiceTypeDto) {
-    return this.serviceTypesService.update(+id, updateServiceTypeDto);
+  @ApiOperation({ summary: "Servisni o'zgartirish" })
+  @Put(':id')
+  async updateServiceType(
+    @Param('id') id: string,
+    @Body() updateServiceTypeDto: UpdateServiceTypeDto,
+  ): Promise<ServiceType> {
+    return this.serviceTypeService.updateServiceType(+id, updateServiceTypeDto);
   }
 
+  @ApiOperation({ summary: "Servisni o'chirish" })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.serviceTypesService.remove(+id);
+  async deleteServiceTypeById(@Param('id') id: string): Promise<object> {
+    return this.serviceTypeService.deleteServiceTypeById(+id);
   }
 }
