@@ -19,6 +19,7 @@ import { PaymentType } from './payment_types/models/payment_type.model';
 import { ServiceType } from './service_types/models/service_type.model';
 import { WorkTime } from './work_times/models/work_time.model';
 import { WorkService } from './worker_service/models/worker_service.model';
+import { Order } from './orders/models/order.model';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { WorkService } from './worker_service/models/worker_service.model';
         ServiceType,
         WorkTime,
         WorkService,
+        Order,
       ],
       autoLoadModels: true,
       logging: false,
