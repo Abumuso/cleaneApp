@@ -2,7 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
 interface WorkTimeAttr {
-  name: string;
+  start_time: string;
+  end_time: string;
 }
 
 @Table({ tableName: 'work_time' })

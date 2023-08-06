@@ -18,6 +18,7 @@ import { Worker } from './workers/models/worker.model';
 import { PaymentType } from './payment_types/models/payment_type.model';
 import { ServiceType } from './service_types/models/service_type.model';
 import { WorkTime } from './work_times/models/work_time.model';
+import { WorkService } from './worker_service/models/worker_service.model';
 
 @Module({
   imports: [
@@ -29,7 +30,15 @@ import { WorkTime } from './work_times/models/work_time.model';
       username: process.env.POSTGRES_USER,
       password: String(process.env.POSTGRES_PASSWORD),
       database: process.env.POSTGRES_DB,
-      models: [Customer, Region, Worker, PaymentType, ServiceType, WorkTime],
+      models: [
+        Customer,
+        Region,
+        Worker,
+        PaymentType,
+        ServiceType,
+        WorkTime,
+        WorkService,
+      ],
       autoLoadModels: true,
       logging: false,
     }),

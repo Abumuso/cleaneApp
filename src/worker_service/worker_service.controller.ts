@@ -1,34 +1,56 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { WorkerServiceService } from './worker_service.service';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { CreateWorkerServiceDto } from './dto/create-worker_service.dto';
 import { UpdateWorkerServiceDto } from './dto/update-worker_service.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { WorkerServicesService } from './worker_service.service';
+import { WorkService } from './models/worker_service.model';
 
+@ApiTags('Ishchi xizmati')
 @Controller('worker-service')
 export class WorkerServiceController {
-  constructor(private readonly workerServiceService: WorkerServiceService) {}
+  constructor(private readonly workerSerService: WorkerServicesService) {}
 
-  @Post()
-  create(@Body() createWorkerServiceDto: CreateWorkerServiceDto) {
-    return this.workerServiceService.create(createWorkerServiceDto);
+  @ApiOperation({ summary: 'Ishchi xizmatini yaratish' })
+  @Post('create')
+  async createWorkService(
+    @Body() createWorkerServiceDto: CreateWorkerServiceDto,
+  ) {
+    return this.workerSerService.createWorkerService(createWorkerServiceDto);
   }
 
-  @Get()
-  findAll() {
-    return this.workerServiceService.findAll();
+  @ApiOperation({ summary: "Ishchi xizmatini ko'rish" })
+  @Get('all')
+  async getAllWorkerServices(): Promise<WorkService[]> {
+    return this.workerSerService.getAllWorkerServices();
   }
 
+  @ApiOperation({ summary: "Ishchi xizmatini id bo'yicha ko'rish" })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.workerServiceService.findOne(+id);
+  async getWorkerServiceBYId(@Param('id') id: string): Promise<WorkService> {
+    return this.workerSerService.getWorkerServiceById(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWorkerServiceDto: UpdateWorkerServiceDto) {
-    return this.workerServiceService.update(+id, updateWorkerServiceDto);
+  @ApiOperation({ summary: "Ishchi xizmatini o'zgartirish" })
+  @Put(':id')
+  async updateWorkService(
+    @Param('id') id: string,
+    @Body() updateWorkServiceDto: UpdateWorkerServiceDto,
+  ): Promise<WorkService> {
+    return this.workerSerService.updateWorkerService(+id, updateWorkServiceDto);
   }
 
+  @ApiOperation({ summary: "Ishchi xizmatini o'chirish" })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.workerServiceService.remove(+id);
+  async deleteWorkServiceById(@Param('id') id: string): Promise<object> {
+    return this.workerSerService.deleteWorkerServiceById(+id);
   }
 }
