@@ -1,4 +1,11 @@
-import { BadRequestException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Worker } from './models/worker.model';
 import { JwtService } from '@nestjs/jwt';
@@ -8,6 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { Response } from 'express';
 import { LoginWorkerDto } from './dto/login-worker.dto';
+import { UpdateWorkerDto } from './dto/update-worker.dto';
 
 @Injectable()
 export class WorkerService {
@@ -200,5 +208,43 @@ export class WorkerService {
       user: updateWorker,
     };
     return response;
+  }
+
+  async getAllWorkers(): Promise<Worker[]> {
+    const workers = await this.workerRepo.findAll({
+      include: { all: true },
+    });
+    return workers;
+  }
+
+  async getWorkerById(id: number): Promise<Worker> {
+    const worker = await this.workerRepo.findOne({
+      where: { id },
+    });
+    if (!worker) {
+      throw new HttpException('Worker topilmadi', HttpStatus.NOT_FOUND);
+    }
+    return worker;
+  }
+
+  async updateWorker(
+    id: number,
+    updateWorkerDto: UpdateWorkerDto,
+  ): Promise<Worker> {
+    const worker = await this.workerRepo.update(updateWorkerDto, {
+      where: { id },
+      returning: true,
+    });
+    return worker[1][0].dataValues;
+  }
+
+  async deleteWorkerById(id: number): Promise<object> {
+    const worker = await this.workerRepo.destroy({
+      where: { id },
+    });
+    if (!worker) {
+      throw new HttpException('Worker topilmadi', HttpStatus.NOT_FOUND);
+    }
+    return { message: "Worker o'chirildi" };
   }
 }

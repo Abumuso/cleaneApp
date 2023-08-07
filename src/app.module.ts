@@ -4,7 +4,6 @@ import { WorkersModule } from './workers/workers.module';
 import { AdminsModule } from './admins/admins.module';
 import { OrdersModule } from './orders/orders.module';
 import { WorkerServiceModule } from './worker_service/worker_service.module';
-import { PlasticCardsModule } from './plastic_cards/plastic_cards.module';
 import { WorkTimesModule } from './work_times/work_times.module';
 import { ServiceTypesModule } from './service_types/service_types.module';
 import { PaymentTypesModule } from './payment_types/payment_types.module';
@@ -20,6 +19,7 @@ import { ServiceType } from './service_types/models/service_type.model';
 import { WorkTime } from './work_times/models/work_time.model';
 import { WorkService } from './worker_service/models/worker_service.model';
 import { Order } from './orders/models/order.model';
+import { Admin } from './admins/models/admin.model';
 
 @Module({
   imports: [
@@ -40,6 +40,7 @@ import { Order } from './orders/models/order.model';
         WorkTime,
         WorkService,
         Order,
+        Admin,
       ],
       autoLoadModels: true,
       logging: false,
@@ -49,7 +50,6 @@ import { Order } from './orders/models/order.model';
     AdminsModule,
     OrdersModule,
     WorkerServiceModule,
-    PlasticCardsModule,
     WorkTimesModule,
     ServiceTypesModule,
     PaymentTypesModule,

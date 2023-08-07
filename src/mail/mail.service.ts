@@ -2,6 +2,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { Customer } from '../customers/models/customer.model';
 import { Worker } from '../workers/models/worker.model';
+import { Admin } from '../admins/models/admin.model';
 
 @Injectable()
 export class MailService {
@@ -30,6 +31,20 @@ export class MailService {
       template: './confirmation',
       context: {
         name: worker.first_name,
+        url,
+      },
+    });
+  }
+
+  async sendAdminConfirmation(admin: Admin): Promise<void> {
+    const url = `${process.env.API_HOST}/admins/activate/${admin.activation_link}`;
+    console.log(url);
+    await this.mailerService.sendMail({
+      to: admin.email,
+      subject: 'Wellcome to cleaneApp! Confirm your Email!',
+      template: './confirmation',
+      context: {
+        name: admin.username,
         url,
       },
     });

@@ -1,34 +1,105 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+  Put,
+} from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Admin } from './models/admin.model';
+import { Response } from 'express';
+import { LoginAdminDto } from './dto/login-admin.dto';
+import { CookieGetter } from '../decorators/cookieGetter.decorator';
+import { AdminGuard } from '../guards/admin.guard';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 
+@ApiTags('Adminlar')
 @Controller('admins')
 export class AdminsController {
   constructor(private readonly adminsService: AdminsService) {}
 
-  @Post()
-  create(@Body() createAdminDto: CreateAdminDto) {
-    return this.adminsService.create(createAdminDto);
+  @ApiOperation({ summary: 'register Admin' })
+  @ApiResponse({ status: 201, type: Admin })
+  @Post('signup')
+  registration(
+    @Body() createAdminDto: CreateAdminDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.adminsService.registration(createAdminDto, res);
   }
 
-  @Get()
-  findAll() {
-    return this.adminsService.findAll();
+  @ApiOperation({ summary: 'login Admin' })
+  @ApiResponse({ status: 200, type: Admin })
+  @HttpCode(HttpStatus.OK)
+  @Post('signin')
+  login(
+    @Body() loginAdminDto: LoginAdminDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.adminsService.login(loginAdminDto, res);
   }
 
+  @ApiOperation({ summary: 'logout Admin' })
+  @ApiResponse({ status: 200, type: Admin })
+  @HttpCode(HttpStatus.OK)
+  @Post('signout')
+  logout(
+    @CookieGetter('refresh_token') refreshToken: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.adminsService.logout(refreshToken, res);
+  }
+
+  @UseGuards(AdminGuard)
+  @Post(':id/refresh')
+  refresh(
+    @Param('id') id: string,
+    @CookieGetter('refresh_token') refreshToken: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.adminsService.refreshToken(+id, refreshToken, res);
+  }
+
+  @ApiOperation({ summary: 'activate admin' })
+  @ApiResponse({ status: 200, type: [Admin] })
+  @Get('activate/:link')
+  activate(@Param('link') link: string) {
+    return this.adminsService.activate(link);
+  }
+
+  @ApiOperation({ summary: "Adminni ko'rish" })
+  @Get('all')
+  async getAllAdmins(): Promise<Admin[]> {
+    return this.adminsService.getAllAdmins();
+  }
+
+  @ApiOperation({ summary: "Adminni id bo'yicha ko'rish" })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.adminsService.findOne(+id);
+  async getAdminBYId(@Param('id') id: string): Promise<Admin> {
+    return this.adminsService.getAdminById(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-    return this.adminsService.update(+id, updateAdminDto);
+  @ApiOperation({ summary: "Adminni o'zgartirish" })
+  @Put(':id')
+  async updateAdmin(
+    @Param('id') id: string,
+    @Body() updateAdminDto: UpdateAdminDto,
+  ): Promise<Admin> {
+    return this.adminsService.updateAdmin(+id, updateAdminDto);
   }
 
+  @ApiOperation({ summary: "Adminni o'chirish" })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adminsService.remove(+id);
+  async deleteAdminById(@Param('id') id: string): Promise<object> {
+    return this.adminsService.deleteAdminById(+id);
   }
 }

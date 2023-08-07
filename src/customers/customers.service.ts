@@ -1,6 +1,8 @@
 import {
   BadRequestException,
   ForbiddenException,
+  HttpException,
+  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -13,6 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { LoginCustomerDto } from './dto/login-customer.dto';
 import { Response } from 'express';
+import { UpdateCustomerDto } from './dto/update-customer.dto';
 
 @Injectable()
 export class CustomersService {
@@ -132,7 +135,9 @@ export class CustomersService {
     if (customer_id != decodedToken['id']) {
       throw new BadRequestException('customer not found');
     }
-    const customer = await this.customerRepo.findOne({ where: { id: customer_id } });
+    const customer = await this.customerRepo.findOne({
+      where: { id: customer_id },
+    });
     if (!customer || !customer.hashed_refresh_token) {
       throw new BadRequestException('customer not found');
     }
@@ -208,33 +213,41 @@ export class CustomersService {
     return response;
   }
 
-  //   async findAll(findUserDto: FindUserDto) {
-  //     const where = {};
-  //     if (findUserDto.first_name) {
-  //       where['first_name'] = {
-  //         [Op.like]: `%${findUserDto.first_name}%`,
-  //       };
-  //     }
-  //     if (findUserDto.last_name) {
-  //       where['last_name'] = {
-  //         [Op.like]: `%${findUserDto.last_name}%`,
-  //       };
-  //     }
-  //     if (findUserDto.birthday_begin && findUserDto.birthday_end) {
-  //       where[Op.and] = {
-  //         birthday: {
-  //           [Op.between]: [findUserDto.birthday_begin, findUserDto.birthday_end],
-  //         },
-  //       };
-  //     } else if (findUserDto.birthday_begin) {
-  //       where['birthday'] = { [Op.gte]: findUserDto.birthday_begin };
-  //     } else if (findUserDto.birthday_end) {
-  //       where['birthday'] = { [Op.lte]: findUserDto.birthday_end };
-  //     }
-  //     const users = await User.findAll({ where });
-  //     if (!users) {
-  //       throw new BadRequestException('user not found');
-  //     }
-  //     return users;
-  //   }
+  async getAllCustomers(): Promise<Customer[]> {
+    const customers = await this.customerRepo.findAll({
+      include: { all: true },
+    });
+    return customers;
+  }
+
+  async getCustomerById(id: number): Promise<Customer> {
+    const customer = await this.customerRepo.findOne({
+      where: { id },
+    });
+    if (!customer) {
+      throw new HttpException('Customer topilmadi', HttpStatus.NOT_FOUND);
+    }
+    return customer;
+  }
+
+  async updateCustomer(
+    id: number,
+    updateCustomerDto: UpdateCustomerDto,
+  ): Promise<Customer> {
+    const customer = await this.customerRepo.update(updateCustomerDto, {
+      where: { id },
+      returning: true,
+    });
+    return customer[1][0].dataValues;
+  }
+
+  async deleteCustomerById(id: number): Promise<object> {
+    const customer = await this.customerRepo.destroy({
+      where: { id },
+    });
+    if (!customer) {
+      throw new HttpException('Customer topilmadi', HttpStatus.NOT_FOUND);
+    }
+    return { message: "Customer o'chirildi" };
+  }
 }

@@ -1,12 +1,15 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
   Post,
+  Put,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { CustomersService } from './customers.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -15,6 +18,8 @@ import { CreateCustomerDto } from './dto/create-customer.dto';
 import { Response } from 'express';
 import { LoginCustomerDto } from './dto/login-customer.dto';
 import { CookieGetter } from '../decorators/cookieGetter.decorator';
+import { CustomerGuard } from '../guards/customer.guard';
+import { UpdateCustomerDto } from './dto/update-customer.dto';
 
 @ApiTags('Foydalanuvchilar')
 @Controller('customers')
@@ -53,10 +58,47 @@ export class CustomersController {
     return this.customersService.logout(refreshToken, res);
   }
 
+  @UseGuards(CustomerGuard)
+  @Post(':id/refresh')
+  refresh(
+    @Param('id') id: string,
+    @CookieGetter('refresh_token') refreshToken: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.customersService.refreshToken(+id, refreshToken, res);
+  }
+
   @ApiOperation({ summary: 'activate customer' })
   @ApiResponse({ status: 200, type: [Customer] })
   @Get('activate/:link')
   activate(@Param('link') link: string) {
     return this.customersService.activate(link);
+  }
+
+  @ApiOperation({ summary: "Foydalanuvchini ko'rish" })
+  @Get('all')
+  async getAllCustomers(): Promise<Customer[]> {
+    return this.customersService.getAllCustomers();
+  }
+
+  @ApiOperation({ summary: "Foydalanuvchini id bo'yicha ko'rish" })
+  @Get(':id')
+  async getCustomerBYId(@Param('id') id: string): Promise<Customer> {
+    return this.customersService.getCustomerById(+id);
+  }
+
+  @ApiOperation({ summary: "Foydalanuvchini o'zgartirish" })
+  @Put(':id')
+  async updateCustomer(
+    @Param('id') id: string,
+    @Body() updateCustomerDto: UpdateCustomerDto,
+  ): Promise<Customer> {
+    return this.customersService.updateCustomer(+id, updateCustomerDto);
+  }
+
+  @ApiOperation({ summary: "Foydalanuvchini o'chirish" })
+  @Delete(':id')
+  async deleteCustomerById(@Param('id') id: string): Promise<object> {
+    return this.customersService.deleteCustomerById(+id);
   }
 }
