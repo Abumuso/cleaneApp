@@ -23,6 +23,7 @@ export class OrdersService {
   async getOrderById(id: number): Promise<Order> {
     const order = await this.orderRepo.findOne({
       where: { id },
+      include: { all: true },
     });
     if (!order) {
       throw new HttpException('Order topilmadi', HttpStatus.NOT_FOUND);

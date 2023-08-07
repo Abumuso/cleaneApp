@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { Region } from '../../regions/models/region.model';
 
 interface WorkerAttrs {
   first_name: string;
@@ -111,6 +119,7 @@ export class Worker extends Model<Worker, WorkerAttrs> {
     example: 1,
     description: 'Ishchi IDsi',
   })
+  @ForeignKey(() => Region)
   @Column({
     type: DataType.INTEGER,
   })
@@ -149,4 +158,7 @@ export class Worker extends Model<Worker, WorkerAttrs> {
     type: DataType.STRING,
   })
   activation_link: string;
+
+  @BelongsTo(() => Region)
+  region:Region
 }

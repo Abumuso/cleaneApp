@@ -1,5 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { WorkService } from '../../worker_service/models/worker_service.model';
+import { Customer } from '../../customers/models/customer.model';
+import { PaymentType } from '../../payment_types/models/payment_type.model';
 
 interface OrderAttr {
   cutomer_id: number;
@@ -21,6 +31,7 @@ export class Order extends Model<Order, OrderAttr> {
   id: number;
 
   @ApiProperty({ example: '1', description: "Foydalanuvchi 'ID'si" })
+  @ForeignKey(() => Customer)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
@@ -28,6 +39,7 @@ export class Order extends Model<Order, OrderAttr> {
   customer_id: number;
 
   @ApiProperty({ example: '1', description: "Servis 'ID'si" })
+  @ForeignKey(() => WorkService)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
@@ -49,6 +61,7 @@ export class Order extends Model<Order, OrderAttr> {
   total_price: number;
 
   @ApiProperty({ example: 1, description: "To'lov turi 'ID'si" })
+  @ForeignKey(() => PaymentType)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
@@ -61,4 +74,13 @@ export class Order extends Model<Order, OrderAttr> {
     allowNull: false,
   })
   is_finished: boolean;
+
+  @BelongsTo(() => WorkService)
+  work_service: WorkService;
+
+  @BelongsTo(() => Customer)
+  customer: Customer;
+
+  @BelongsTo(() => PaymentType)
+  payment_type: PaymentType;
 }

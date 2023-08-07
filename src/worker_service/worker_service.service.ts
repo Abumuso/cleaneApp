@@ -29,6 +29,7 @@ export class WorkerServicesService {
   async getWorkerServiceById(id: number): Promise<WorkService> {
     const workService = await this.workerserviceRepo.findOne({
       where: { id },
+      include: { all: true },
     });
     if (!workService) {
       throw new HttpException('WorkService topilmadi', HttpStatus.NOT_FOUND);
