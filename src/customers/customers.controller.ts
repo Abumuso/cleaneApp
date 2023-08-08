@@ -20,6 +20,7 @@ import { LoginCustomerDto } from './dto/login-customer.dto';
 import { CookieGetter } from '../decorators/cookieGetter.decorator';
 import { CustomerGuard } from '../guards/customer.guard';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { SelfGuard } from '../guards/self.guard';
 
 @ApiTags('Foydalanuvchilar')
 @Controller('customers')
@@ -88,6 +89,7 @@ export class CustomersController {
   }
 
   @ApiOperation({ summary: "Foydalanuvchini o'zgartirish" })
+  @UseGuards(SelfGuard)
   @Put(':id')
   async updateCustomer(
     @Param('id') id: string,
@@ -97,6 +99,7 @@ export class CustomersController {
   }
 
   @ApiOperation({ summary: "Foydalanuvchini o'chirish" })
+  @UseGuards(SelfGuard)
   @Delete(':id')
   async deleteCustomerById(@Param('id') id: string): Promise<object> {
     return this.customersService.deleteCustomerById(+id);

@@ -20,6 +20,7 @@ import { LoginWorkerDto } from './dto/login-worker.dto';
 import { CookieGetter } from '../decorators/cookieGetter.decorator';
 import { WorkerGuard } from '../guards/worker.guard';
 import { UpdateWorkerDto } from './dto/update-worker.dto';
+import { SelfGuard } from '../guards/self.guard';
 
 @ApiTags('Ishchilar')
 @Controller('workers')
@@ -88,6 +89,7 @@ export class WorkerController {
   }
 
   @ApiOperation({ summary: "Ishchini o'zgartirish" })
+  @UseGuards(SelfGuard)
   @Put(':id')
   async updateWorker(
     @Param('id') id: string,
@@ -97,6 +99,7 @@ export class WorkerController {
   }
 
   @ApiOperation({ summary: "Ishchini o'chirish" })
+  @UseGuards(SelfGuard)
   @Delete(':id')
   async deleteWorkerById(@Param('id') id: string): Promise<object> {
     return this.workerService.deleteWorkerById(+id);
